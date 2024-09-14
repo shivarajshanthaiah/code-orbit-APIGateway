@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./";
+
+import "google/protobuf/timestamp.proto";
+
+service UserService{
+    rpc UserSignup(Signup) returns(Response);
+    rpc VerifyUser(OTP) returns(Response);
+    rpc UserLogin(Login) returns(Response);
+
+    rpc ViewProfile(ID) returns (Profile); 
+    rpc EditProfile(Profile) returns(Profile);
+    rpc ChangePassword(Password) returns(Response);
+    rpc BlockUser(ID) returns(Response);
+
+}
+
+message Signup {
+    string User_Name = 1;
+    string Email = 2;
+    string Password = 3;
+    string Phone = 4;
+};
+
+message OTP {
+    string Email = 1;
+    string OTP = 2;
+}
+
+message Login {
+    string Email = 1;
+    string Password = 2;
+}
+
+message Response {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+message ID {
+    string ID = 1;
+}
+
+message Profile {
+    string User_ID = 1;
+    string User_Name = 2;
+    string Email = 3; 
+    string Phone = 4;
+    bool is_Prime_Member = 5;
+    bool Is_Blocked = 6;
+    google.protobuf.Timestamp membership_Expiry_Date = 7;
+}
+
+message NoParam {}
+
+message Password {
+    string User_ID = 1;
+    string Old_Password = 2;
+    string New_Password = 3;
+    string Confirm_Password = 4;
+}

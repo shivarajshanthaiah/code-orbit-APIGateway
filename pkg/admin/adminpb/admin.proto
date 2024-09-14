@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./";
+
+import "google/protobuf/timestamp.proto";
+
+service AdminService {
+    rpc AdminLoginRequest(AdminLogin) returns(AdminResponse);
+    rpc AdminBlockUser(userID) returns(AdminResponse);
+    rpc AdminUnBlockUser(userID) returns(AdminResponse);
+    rpc AdminGetAllUsers(NoParam) returns(UserList);
+}
+
+message AdminLogin {
+    string Email = 1;
+    string Password = 2;
+}
+
+message AdminResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+message userID {
+    string ID = 1;
+}
+
+message Profile {
+    string User_ID = 1;
+    string User_Name = 2;
+    string Email = 3; 
+    string Phone = 4;
+    bool is_Prime_Member = 5;
+    bool Is_Blocked = 6;
+    google.protobuf.Timestamp membership_Expiry_Date = 7;
+}
+
+message NoParam {}
+
+message UserList {
+    repeated Profile users = 1;
+}
