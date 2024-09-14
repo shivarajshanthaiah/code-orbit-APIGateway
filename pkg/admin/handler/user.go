@@ -27,14 +27,13 @@ func BlockUserHandler(c *gin.Context, client pb.AdminServiceClient) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusAccepted, gin.H{
 		"Status":  http.StatusAccepted,
 		"Message": "User blocked succesfully",
 		"Data":    response,
 	})
 }
-
 
 func UnBlockUserHandler(c *gin.Context, client pb.AdminServiceClient) {
 	timeout := time.Second * 100
@@ -54,10 +53,58 @@ func UnBlockUserHandler(c *gin.Context, client pb.AdminServiceClient) {
 		})
 		return
 	}
-	
+
 	c.JSON(http.StatusAccepted, gin.H{
 		"Status":  http.StatusAccepted,
 		"Message": "User unblocked succesfully",
+		"Data":    response,
+	})
+}
+
+func FindAllUsersHandler(c *gin.Context, client pb.AdminServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	resonse, err := client.AdminGetAllUsers(ctx, &pb.AdNoParam{})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "error in client response",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"Status":  http.StatusAccepted,
+		"Message": "Users list fetched successfully",
+		"Data":    resonse,
+	})
+}
+
+func FindUserByIDHandler(c *gin.Context, client pb.AdminServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	userId := c.Param("id")
+
+	response, err := client.AdminFindUserByID(ctx, &pb.AdID{
+		ID: userId,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "error in client response",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"Status":  http.StatusAccepted,
+		"Message": "User fetched succesfully",
 		"Data":    response,
 	})
 }

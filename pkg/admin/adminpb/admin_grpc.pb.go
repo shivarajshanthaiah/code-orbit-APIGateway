@@ -25,6 +25,8 @@ type AdminServiceClient interface {
 	AdminLoginRequest(ctx context.Context, in *AdminLogin, opts ...grpc.CallOption) (*AdminResponse, error)
 	AdminBlockUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*AdminResponse, error)
 	AdminUnBlockUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*AdminResponse, error)
+	AdminGetAllUsers(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdUserList, error)
+	AdminFindUserByID(ctx context.Context, in *AdID, opts ...grpc.CallOption) (*AdUserProfile, error)
 }
 
 type adminServiceClient struct {
@@ -62,6 +64,24 @@ func (c *adminServiceClient) AdminUnBlockUser(ctx context.Context, in *UserID, o
 	return out, nil
 }
 
+func (c *adminServiceClient) AdminGetAllUsers(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdUserList, error) {
+	out := new(AdUserList)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminGetAllUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) AdminFindUserByID(ctx context.Context, in *AdID, opts ...grpc.CallOption) (*AdUserProfile, error) {
+	out := new(AdUserProfile)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminFindUserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -69,6 +89,8 @@ type AdminServiceServer interface {
 	AdminLoginRequest(context.Context, *AdminLogin) (*AdminResponse, error)
 	AdminBlockUser(context.Context, *UserID) (*AdminResponse, error)
 	AdminUnBlockUser(context.Context, *UserID) (*AdminResponse, error)
+	AdminGetAllUsers(context.Context, *AdNoParam) (*AdUserList, error)
+	AdminFindUserByID(context.Context, *AdID) (*AdUserProfile, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -84,6 +106,12 @@ func (UnimplementedAdminServiceServer) AdminBlockUser(context.Context, *UserID) 
 }
 func (UnimplementedAdminServiceServer) AdminUnBlockUser(context.Context, *UserID) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminUnBlockUser not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminGetAllUsers(context.Context, *AdNoParam) (*AdUserList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminGetAllUsers not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminFindUserByID(context.Context, *AdID) (*AdUserProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminFindUserByID not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -152,6 +180,42 @@ func _AdminService_AdminUnBlockUser_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_AdminGetAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdNoParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminGetAllUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminGetAllUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminGetAllUsers(ctx, req.(*AdNoParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_AdminFindUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminFindUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminFindUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminFindUserByID(ctx, req.(*AdID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +234,14 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminUnBlockUser",
 			Handler:    _AdminService_AdminUnBlockUser_Handler,
+		},
+		{
+			MethodName: "AdminGetAllUsers",
+			Handler:    _AdminService_AdminGetAllUsers_Handler,
+		},
+		{
+			MethodName: "AdminFindUserByID",
+			Handler:    _AdminService_AdminFindUserByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

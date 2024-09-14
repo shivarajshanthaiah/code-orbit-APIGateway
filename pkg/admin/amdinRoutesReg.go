@@ -16,3 +16,11 @@ func (a *Admin) BlockUser(ctx *gin.Context) {
 func (a *Admin) UnblockUser(ctx *gin.Context) {
 	handler.UnBlockUserHandler(ctx, a.Client)
 }
+
+func (a *Admin) GetAllUsers(ctx *gin.Context) {
+	handler.FindAllUsersHandler(ctx, a.Client)
+}
+
+func (a *Admin) GetUserByID(ctx *gin.Context) {
+	handler.FindUserByIDHandler(ctx, a.Client)
+}

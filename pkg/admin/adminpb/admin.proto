@@ -8,9 +8,15 @@ import "google/protobuf/timestamp.proto";
 
 service AdminService {
     rpc AdminLoginRequest(AdminLogin) returns(AdminResponse);
+
     rpc AdminBlockUser(userID) returns(AdminResponse);
     rpc AdminUnBlockUser(userID) returns(AdminResponse);
-    rpc AdminGetAllUsers(NoParam) returns(UserList);
+    rpc AdminGetAllUsers(AdNoParam) returns(AdUserList);
+    rpc AdminFindUserByID(AdID) returns(AdUserProfile);
+}
+
+message AdID{
+    string ID = 1;
 }
 
 message AdminLogin {
@@ -36,7 +42,7 @@ message userID {
     string ID = 1;
 }
 
-message Profile {
+message AdUserProfile {
     string User_ID = 1;
     string User_Name = 2;
     string Email = 3; 
@@ -46,8 +52,8 @@ message Profile {
     google.protobuf.Timestamp membership_Expiry_Date = 7;
 }
 
-message NoParam {}
+message AdNoParam {}
 
-message UserList {
-    repeated Profile users = 1;
+message AdUserList {
+    repeated AdUserProfile users = 1;
 }

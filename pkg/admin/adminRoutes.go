@@ -37,5 +37,7 @@ func NewAdminRoute(c *gin.Engine, cfg config.Config) {
 	{
 		auth.PATCH("/user/block/:id", adminHandler.BlockUser)
 		auth.PATCH("/user/unblock/:id", adminHandler.UnblockUser)
+		auth.GET("/user/list", adminHandler.GetAllUsers)
+		auth.GET("/user/:id", adminHandler.GetUserByID)
 	}
 }
