@@ -13,6 +13,15 @@ service AdminService {
     rpc AdminUnBlockUser(userID) returns(AdminResponse);
     rpc AdminGetAllUsers(AdNoParam) returns(AdUserList);
     rpc AdminFindUserByID(AdID) returns(AdUserProfile);
+
+    rpc InsertProblem(Problem) returns(AdminResponse);
+}
+
+message Problem{
+    string Title = 1;
+    string Discription = 2;
+    string Difficulty = 3;
+    string Tags = 4;
 }
 
 message AdID{

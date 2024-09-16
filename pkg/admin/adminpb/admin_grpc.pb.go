@@ -27,6 +27,7 @@ type AdminServiceClient interface {
 	AdminUnBlockUser(ctx context.Context, in *UserID, opts ...grpc.CallOption) (*AdminResponse, error)
 	AdminGetAllUsers(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdUserList, error)
 	AdminFindUserByID(ctx context.Context, in *AdID, opts ...grpc.CallOption) (*AdUserProfile, error)
+	InsertProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*AdminResponse, error)
 }
 
 type adminServiceClient struct {
@@ -82,6 +83,15 @@ func (c *adminServiceClient) AdminFindUserByID(ctx context.Context, in *AdID, op
 	return out, nil
 }
 
+func (c *adminServiceClient) InsertProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/InsertProblem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type AdminServiceServer interface {
 	AdminUnBlockUser(context.Context, *UserID) (*AdminResponse, error)
 	AdminGetAllUsers(context.Context, *AdNoParam) (*AdUserList, error)
 	AdminFindUserByID(context.Context, *AdID) (*AdUserProfile, error)
+	InsertProblem(context.Context, *Problem) (*AdminResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedAdminServiceServer) AdminGetAllUsers(context.Context, *AdNoPa
 }
 func (UnimplementedAdminServiceServer) AdminFindUserByID(context.Context, *AdID) (*AdUserProfile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminFindUserByID not implemented")
+}
+func (UnimplementedAdminServiceServer) InsertProblem(context.Context, *Problem) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertProblem not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -216,6 +230,24 @@ func _AdminService_AdminFindUserByID_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_InsertProblem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Problem)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).InsertProblem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/InsertProblem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).InsertProblem(ctx, req.(*Problem))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminFindUserByID",
 			Handler:    _AdminService_AdminFindUserByID_Handler,
+		},
+		{
+			MethodName: "InsertProblem",
+			Handler:    _AdminService_InsertProblem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

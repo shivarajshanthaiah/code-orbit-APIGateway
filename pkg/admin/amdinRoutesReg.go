@@ -24,3 +24,7 @@ func (a *Admin) GetAllUsers(ctx *gin.Context) {
 func (a *Admin) GetUserByID(ctx *gin.Context) {
 	handler.FindUserByIDHandler(ctx, a.Client)
 }
+
+func (a *Admin) InsertProblem(ctx *gin.Context) {
+	handler.InsertProblemHanlder(ctx, a.Client)
+}
