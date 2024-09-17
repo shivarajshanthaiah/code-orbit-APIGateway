@@ -40,6 +40,15 @@ func UserSignupHandler(c *gin.Context, client pb.UserServiceClient) {
 		return
 	}
 
+	if response.Status == pb.Response_ERROR {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": response.Message,
+			"Data":    response.Payload,
+		})
+		return
+	}
+
 	c.JSON(http.StatusAccepted, gin.H{
 		"Status":  http.StatusAccepted,
 		"Message": "Go to verification page and enter otp",
