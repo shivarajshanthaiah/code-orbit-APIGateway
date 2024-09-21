@@ -32,6 +32,7 @@ type AdminServiceClient interface {
 	AdminEditProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Problem, error)
 	InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	UpdateTestCases(ctx context.Context, in *AdUpdateTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
+	GetProblemWithTestCases(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminTestcaseResponse, error)
 }
 
 type adminServiceClient struct {
@@ -132,6 +133,15 @@ func (c *adminServiceClient) UpdateTestCases(ctx context.Context, in *AdUpdateTe
 	return out, nil
 }
 
+func (c *adminServiceClient) GetProblemWithTestCases(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminTestcaseResponse, error) {
+	out := new(AdminTestcaseResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/GetProblemWithTestCases", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type AdminServiceServer interface {
 	AdminEditProblem(context.Context, *Problem) (*Problem, error)
 	InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error)
 	UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error)
+	GetProblemWithTestCases(context.Context, *AdProblemId) (*AdminTestcaseResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedAdminServiceServer) InsertTestCases(context.Context, *AdTestC
 }
 func (UnimplementedAdminServiceServer) UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTestCases not implemented")
+}
+func (UnimplementedAdminServiceServer) GetProblemWithTestCases(context.Context, *AdProblemId) (*AdminTestcaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProblemWithTestCases not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -376,6 +390,24 @@ func _AdminService_UpdateTestCases_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_GetProblemWithTestCases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdProblemId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetProblemWithTestCases(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/GetProblemWithTestCases",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetProblemWithTestCases(ctx, req.(*AdProblemId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateTestCases",
 			Handler:    _AdminService_UpdateTestCases_Handler,
+		},
+		{
+			MethodName: "GetProblemWithTestCases",
+			Handler:    _AdminService_GetProblemWithTestCases_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -44,3 +44,8 @@ func (a *Admin) InsertTestCases(ctx *gin.Context) {
 func (a *Admin) UpdateTestCases(ctx *gin.Context) {
 	handler.UpdateTestCaseHandler(ctx, a.Client)
 }
+
+
+func (a *Admin) GetProblemWithTestCases(ctx *gin.Context){
+	handler.GetProblemWithTestCasesHandler(ctx, a.Client)
+}
