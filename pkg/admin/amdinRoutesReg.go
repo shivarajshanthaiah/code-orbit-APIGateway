@@ -28,3 +28,19 @@ func (a *Admin) GetUserByID(ctx *gin.Context) {
 func (a *Admin) InsertProblem(ctx *gin.Context) {
 	handler.InsertProblemHanlder(ctx, a.Client)
 }
+
+func (a *Admin) GetAllProblems(ctx *gin.Context) {
+	handler.AdminGetAllProblemsHandler(ctx, a.Client)
+}
+
+func (a *Admin) EditProblem(ctx *gin.Context) {
+	handler.EditProblemHandler(ctx, a.Client)
+}
+
+func (a *Admin) InsertTestCases(ctx *gin.Context) {
+	handler.InsertTestCaseHandler(ctx, a.Client)
+}
+
+func (a *Admin) UpdateTestCases(ctx *gin.Context) {
+	handler.UpdateTestCaseHandler(ctx, a.Client)
+}

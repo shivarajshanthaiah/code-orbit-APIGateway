@@ -15,13 +15,40 @@ service AdminService {
     rpc AdminFindUserByID(AdID) returns(AdUserProfile);
 
     rpc InsertProblem(Problem) returns(AdminResponse);
+    rpc AdminGetAllProblems(AdNoParam) returns(AdProblemList);
+    rpc AdminEditProblem(Problem) returns(Problem);
+    
+    rpc InsertTestCases(AdTestCaseRequest) returns(AdminResponse);
+    rpc UpdateTestCases(AdUpdateTestCaseRequest) returns (AdminResponse);
+}      
+
+message AdUpdateTestCaseRequest {
+    string test_case_id = 1; // The ID of the test case being updated
+    int32 problem_id = 2;
+    repeated AdTestCase test_cases = 3;
+}
+
+message AdTestCase{
+    string input = 1;
+    string expected_output = 2;
+}
+
+message AdTestCaseRequest {
+    int32 problem_id = 1;
+    repeated AdTestCase test_cases = 2;
 }
 
 message Problem{
-    string Title = 1;
-    string Discription = 2;
-    string Difficulty = 3;
-    string Tags = 4;
+    uint32 ID = 1;
+    string Title = 2;
+    string Discription = 3;
+    string Difficulty = 4;
+    string Tags = 5;
+    bool IsPremium = 6;
+}
+
+message AdProblemList {
+    repeated Problem problems = 1;
 }
 
 message AdID{

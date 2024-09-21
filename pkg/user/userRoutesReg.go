@@ -28,3 +28,7 @@ func (u *User) EditProfile(ctx *gin.Context) {
 func (u *User) ChangePassword(ctx *gin.Context) {
 	handler.ChangePasswordHandler(ctx, u.Client)
 }
+
+func (u *User) UGetAllProblems(ctx *gin.Context) {
+	handler.UserGetAllProblemsHandler(ctx, u.Client)
+}

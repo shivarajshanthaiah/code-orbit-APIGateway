@@ -29,6 +29,7 @@ type UserServiceClient interface {
 	EditProfile(ctx context.Context, in *Profile, opts ...grpc.CallOption) (*Profile, error)
 	ChangePassword(ctx context.Context, in *Password, opts ...grpc.CallOption) (*Response, error)
 	BlockUser(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Response, error)
+	UserGetAllProblems(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UserProblemList, error)
 }
 
 type userServiceClient struct {
@@ -102,6 +103,15 @@ func (c *userServiceClient) BlockUser(ctx context.Context, in *ID, opts ...grpc.
 	return out, nil
 }
 
+func (c *userServiceClient) UserGetAllProblems(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UserProblemList, error) {
+	out := new(UserProblemList)
+	err := c.cc.Invoke(ctx, "/pb.UserService/UserGetAllProblems", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type UserServiceServer interface {
 	EditProfile(context.Context, *Profile) (*Profile, error)
 	ChangePassword(context.Context, *Password) (*Response, error)
 	BlockUser(context.Context, *ID) (*Response, error)
+	UserGetAllProblems(context.Context, *UserNoParam) (*UserProblemList, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -140,6 +151,9 @@ func (UnimplementedUserServiceServer) ChangePassword(context.Context, *Password)
 }
 func (UnimplementedUserServiceServer) BlockUser(context.Context, *ID) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUser not implemented")
+}
+func (UnimplementedUserServiceServer) UserGetAllProblems(context.Context, *UserNoParam) (*UserProblemList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetAllProblems not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -280,6 +294,24 @@ func _UserService_BlockUser_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UserGetAllProblems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserNoParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserGetAllProblems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/UserGetAllProblems",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserGetAllProblems(ctx, req.(*UserNoParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +346,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BlockUser",
 			Handler:    _UserService_BlockUser_Handler,
+		},
+		{
+			MethodName: "UserGetAllProblems",
+			Handler:    _UserService_UserGetAllProblems_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

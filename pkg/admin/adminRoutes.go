@@ -40,6 +40,10 @@ func NewAdminRoute(c *gin.Engine, cfg config.Config) {
 		auth.GET("/user/list", adminHandler.GetAllUsers)
 		auth.GET("/user/:id", adminHandler.GetUserByID)
 
-		auth.POST("add/problem", adminHandler.InsertProblem)
+		auth.POST("/add/problem", adminHandler.InsertProblem)
+		auth.GET("/get/all/problem", adminHandler.GetAllProblems)
+		auth.POST("/edit/problem", adminHandler.EditProblem)
+		auth.POST("/insert/testcases", adminHandler.InsertTestCases)
+		auth.POST("/update/testcases", adminHandler.UpdateTestCases)
 	}
 }

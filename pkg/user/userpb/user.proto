@@ -16,6 +16,21 @@ service UserService{
     rpc ChangePassword(Password) returns(Response);
     rpc BlockUser(ID) returns(Response);
 
+    rpc UserGetAllProblems(UserNoParam) returns(UserProblemList);
+
+}
+
+message UserProblem{
+    uint32 ID = 1;
+    string Title = 2;
+    string Discription = 3;
+    string Difficulty = 4;
+    string Tags = 5;
+    bool Is_Premium = 6;
+}
+
+message UserProblemList {
+    repeated UserProblem problems = 1;
 }
 
 message Signup {
@@ -63,7 +78,7 @@ message Profile {
     google.protobuf.Timestamp membership_Expiry_Date = 7;
 }
 
-message NoParam {}
+message UserNoParam {}
 
 message Password {
     string User_ID = 1;

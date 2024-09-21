@@ -28,6 +28,10 @@ type AdminServiceClient interface {
 	AdminGetAllUsers(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdUserList, error)
 	AdminFindUserByID(ctx context.Context, in *AdID, opts ...grpc.CallOption) (*AdUserProfile, error)
 	InsertProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*AdminResponse, error)
+	AdminGetAllProblems(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdProblemList, error)
+	AdminEditProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Problem, error)
+	InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
+	UpdateTestCases(ctx context.Context, in *AdUpdateTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 }
 
 type adminServiceClient struct {
@@ -92,6 +96,42 @@ func (c *adminServiceClient) InsertProblem(ctx context.Context, in *Problem, opt
 	return out, nil
 }
 
+func (c *adminServiceClient) AdminGetAllProblems(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdProblemList, error) {
+	out := new(AdProblemList)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminGetAllProblems", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) AdminEditProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Problem, error) {
+	out := new(Problem)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminEditProblem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/InsertTestCases", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) UpdateTestCases(ctx context.Context, in *AdUpdateTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/UpdateTestCases", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -102,6 +142,10 @@ type AdminServiceServer interface {
 	AdminGetAllUsers(context.Context, *AdNoParam) (*AdUserList, error)
 	AdminFindUserByID(context.Context, *AdID) (*AdUserProfile, error)
 	InsertProblem(context.Context, *Problem) (*AdminResponse, error)
+	AdminGetAllProblems(context.Context, *AdNoParam) (*AdProblemList, error)
+	AdminEditProblem(context.Context, *Problem) (*Problem, error)
+	InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error)
+	UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -126,6 +170,18 @@ func (UnimplementedAdminServiceServer) AdminFindUserByID(context.Context, *AdID)
 }
 func (UnimplementedAdminServiceServer) InsertProblem(context.Context, *Problem) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertProblem not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminGetAllProblems(context.Context, *AdNoParam) (*AdProblemList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminGetAllProblems not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminEditProblem(context.Context, *Problem) (*Problem, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminEditProblem not implemented")
+}
+func (UnimplementedAdminServiceServer) InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertTestCases not implemented")
+}
+func (UnimplementedAdminServiceServer) UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTestCases not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -248,6 +304,78 @@ func _AdminService_InsertProblem_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_AdminGetAllProblems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdNoParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminGetAllProblems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminGetAllProblems",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminGetAllProblems(ctx, req.(*AdNoParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_AdminEditProblem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Problem)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminEditProblem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminEditProblem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminEditProblem(ctx, req.(*Problem))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_InsertTestCases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdTestCaseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).InsertTestCases(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/InsertTestCases",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).InsertTestCases(ctx, req.(*AdTestCaseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_UpdateTestCases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdUpdateTestCaseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).UpdateTestCases(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/UpdateTestCases",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).UpdateTestCases(ctx, req.(*AdUpdateTestCaseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +406,22 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "InsertProblem",
 			Handler:    _AdminService_InsertProblem_Handler,
+		},
+		{
+			MethodName: "AdminGetAllProblems",
+			Handler:    _AdminService_AdminGetAllProblems_Handler,
+		},
+		{
+			MethodName: "AdminEditProblem",
+			Handler:    _AdminService_AdminEditProblem_Handler,
+		},
+		{
+			MethodName: "InsertTestCases",
+			Handler:    _AdminService_InsertTestCases_Handler,
+		},
+		{
+			MethodName: "UpdateTestCases",
+			Handler:    _AdminService_UpdateTestCases_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
