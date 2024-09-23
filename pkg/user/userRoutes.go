@@ -40,5 +40,6 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 		auth.PUT("/update/profile", userHandler.EditProfile)
 		auth.PATCH("/change/password", userHandler.ChangePassword)
 		auth.GET("/get/all/problems", userHandler.UGetAllProblems)
+		auth.GET("/get/problem/:id", userHandler.UGetProblemByID)
 	}
 }

@@ -65,7 +65,7 @@ message AdTestCaseRequest {
 }
 
 message AdProblemId {
-    int32 ID = 1;
+    uint32 ID = 1;
 }
 
 message Problem{

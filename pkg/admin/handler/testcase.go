@@ -107,6 +107,7 @@ func UpdateTestCaseHandler(c *gin.Context, client pb.AdminServiceClient) {
 	})
 }
 
+
 func GetProblemWithTestCasesHandler(c *gin.Context, client pb.AdminServiceClient) {
 	timeout := time.Second * 100
 	ctx, cancel := context.WithTimeout(c, timeout)
@@ -125,7 +126,7 @@ func GetProblemWithTestCasesHandler(c *gin.Context, client pb.AdminServiceClient
 
 	// Send the request to the Admin Service
 	response, err := client.GetProblemWithTestCases(ctx, &pb.AdProblemId{
-		ID: int32(problemID),
+		ID: uint32(problemID),
 	})
 
 	if err != nil {
@@ -143,3 +144,4 @@ func GetProblemWithTestCasesHandler(c *gin.Context, client pb.AdminServiceClient
 		"Data":    response,
 	})
 }
+

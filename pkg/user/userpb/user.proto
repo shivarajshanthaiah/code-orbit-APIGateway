@@ -17,7 +17,37 @@ service UserService{
     rpc BlockUser(ID) returns(Response);
 
     rpc UserGetAllProblems(UserNoParam) returns(UserProblemList);
+    rpc UserGetProblemWithTestCases(UserProblemId) returns (UserTestcaseResponse);
 
+}
+
+message UserTestCase{
+    string test_case_id = 1;
+    string input = 2;
+    string expected_output = 3;
+}
+
+message UserProblemWithTestCases {
+    UserProblem problem = 1;
+    repeated UserTestCase test_cases = 2;
+}
+
+message UserTestcaseResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        UserProblemWithTestCases data = 4;
+    }
+}
+
+message UserProblemId {
+    int32 ID = 1;
 }
 
 message UserProblem{
@@ -26,7 +56,7 @@ message UserProblem{
     string Discription = 3;
     string Difficulty = 4;
     string Tags = 5;
-    bool Is_Premium = 6;
+    bool IsPremium = 6;
 }
 
 message UserProblemList {

@@ -32,3 +32,7 @@ func (u *User) ChangePassword(ctx *gin.Context) {
 func (u *User) UGetAllProblems(ctx *gin.Context) {
 	handler.UserGetAllProblemsHandler(ctx, u.Client)
 }
+
+func (u *User) UGetProblemByID(ctx *gin.Context) {
+	handler.GetProblemWithTestCasesHandler(ctx, u.Client)
+}

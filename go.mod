@@ -6,7 +6,6 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/spf13/viper v1.19.0
-	go.mongodb.org/mongo-driver v1.17.0
 	google.golang.org/grpc v1.66.1
 	google.golang.org/protobuf v1.34.1
 )
