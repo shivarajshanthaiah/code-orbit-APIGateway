@@ -179,3 +179,36 @@ func EditProblemHandler(c *gin.Context, client pb.AdminServiceClient) {
 		"Data":    response,
 	})
 }
+
+func AdminUpgradeProblemHandler(c *gin.Context, client pb.AdminServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	problemIdStr := c.Param("id")
+	problemId, err := strconv.Atoi(problemIdStr)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"Status": http.StatusBadRequest,
+			"Message": "error while converting userID to int",
+			"Error":   err.Error()})
+		return
+	}
+
+	response, err := client.AdminUpgradeProbem(ctx, &pb.AdProblemId{
+		ID: uint32(problemId),
+	})
+	
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "error in client response",
+			"Error":   err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"Status":  http.StatusAccepted,
+		"Message": "problem upgraded successfully",
+		"Data":    response,
+	})
+}

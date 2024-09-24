@@ -17,6 +17,7 @@ service AdminService {
     rpc InsertProblem(Problem) returns(AdminResponse);
     rpc AdminGetAllProblems(AdNoParam) returns(AdProblemList);
     rpc AdminEditProblem(Problem) returns(Problem);
+    rpc AdminUpgradeProbem(AdProblemId) returns(AdminResponse);
     
     rpc InsertTestCases(AdTestCaseRequest) returns(AdminResponse);
     rpc UpdateTestCases(AdUpdateTestCaseRequest) returns (AdminResponse);

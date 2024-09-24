@@ -30,6 +30,7 @@ type AdminServiceClient interface {
 	InsertProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*AdminResponse, error)
 	AdminGetAllProblems(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdProblemList, error)
 	AdminEditProblem(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Problem, error)
+	AdminUpgradeProbem(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminResponse, error)
 	InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	UpdateTestCases(ctx context.Context, in *AdUpdateTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	GetProblemWithTestCases(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminTestcaseResponse, error)
@@ -115,6 +116,15 @@ func (c *adminServiceClient) AdminEditProblem(ctx context.Context, in *Problem, 
 	return out, nil
 }
 
+func (c *adminServiceClient) AdminUpgradeProbem(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminUpgradeProbem", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *adminServiceClient) InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error) {
 	out := new(AdminResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminService/InsertTestCases", in, out, opts...)
@@ -154,6 +164,7 @@ type AdminServiceServer interface {
 	InsertProblem(context.Context, *Problem) (*AdminResponse, error)
 	AdminGetAllProblems(context.Context, *AdNoParam) (*AdProblemList, error)
 	AdminEditProblem(context.Context, *Problem) (*Problem, error)
+	AdminUpgradeProbem(context.Context, *AdProblemId) (*AdminResponse, error)
 	InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error)
 	UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error)
 	GetProblemWithTestCases(context.Context, *AdProblemId) (*AdminTestcaseResponse, error)
@@ -187,6 +198,9 @@ func (UnimplementedAdminServiceServer) AdminGetAllProblems(context.Context, *AdN
 }
 func (UnimplementedAdminServiceServer) AdminEditProblem(context.Context, *Problem) (*Problem, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminEditProblem not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminUpgradeProbem(context.Context, *AdProblemId) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminUpgradeProbem not implemented")
 }
 func (UnimplementedAdminServiceServer) InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertTestCases not implemented")
@@ -354,6 +368,24 @@ func _AdminService_AdminEditProblem_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_AdminUpgradeProbem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdProblemId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminUpgradeProbem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminUpgradeProbem",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminUpgradeProbem(ctx, req.(*AdProblemId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AdminService_InsertTestCases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AdTestCaseRequest)
 	if err := dec(in); err != nil {
@@ -446,6 +478,10 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminEditProblem",
 			Handler:    _AdminService_AdminEditProblem_Handler,
+		},
+		{
+			MethodName: "AdminUpgradeProbem",
+			Handler:    _AdminService_AdminUpgradeProbem_Handler,
 		},
 		{
 			MethodName: "InsertTestCases",

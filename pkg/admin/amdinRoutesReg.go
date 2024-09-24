@@ -49,3 +49,7 @@ func (a *Admin) UpdateTestCases(ctx *gin.Context) {
 func (a *Admin) GetProblemWithTestCases(ctx *gin.Context){
 	handler.GetProblemWithTestCasesHandler(ctx, a.Client)
 }
+
+func (a *Admin) UpgradeProblem(ctx *gin.Context){
+	handler.AdminUpgradeProblemHandler(ctx, a.Client)
+}
