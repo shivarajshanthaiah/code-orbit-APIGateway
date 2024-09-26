@@ -43,16 +43,16 @@ func InsertTestCaseHandler(c *gin.Context, client pb.AdminServiceClient) {
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusAccepted, gin.H{
-		"Status":  http.StatusAccepted,
+	c.JSON(http.StatusCreated, gin.H{
+		"Status":  http.StatusCreated,
 		"Message": "testcase added successfully",
 		"Data":    response,
 	})
@@ -92,8 +92,8 @@ func UpdateTestCaseHandler(c *gin.Context, client pb.AdminServiceClient) {
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})

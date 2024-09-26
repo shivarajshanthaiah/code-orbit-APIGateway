@@ -36,3 +36,7 @@ func (u *User) UGetAllProblems(ctx *gin.Context) {
 func (u *User) UGetProblemByID(ctx *gin.Context) {
 	handler.GetProblemWithTestCasesHandler(ctx, u.Client)
 }
+
+func (u *User) SubmitCode(ctx *gin.Context) {
+	handler.SubmitCodeHandler(ctx, u.Client)
+}

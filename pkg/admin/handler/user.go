@@ -20,8 +20,8 @@ func BlockUserHandler(c *gin.Context, client pb.AdminServiceClient) {
 		ID: string(userId),
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
@@ -46,8 +46,8 @@ func UnBlockUserHandler(c *gin.Context, client pb.AdminServiceClient) {
 		ID: string(userId),
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
@@ -68,8 +68,8 @@ func FindAllUsersHandler(c *gin.Context, client pb.AdminServiceClient) {
 
 	resonse, err := client.AdminGetAllUsers(ctx, &pb.AdNoParam{})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
@@ -94,8 +94,8 @@ func FindUserByIDHandler(c *gin.Context, client pb.AdminServiceClient) {
 		ID: userId,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})

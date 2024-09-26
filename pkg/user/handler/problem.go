@@ -17,8 +17,8 @@ func UserGetAllProblemsHandler(c *gin.Context, client pb.UserServiceClient) {
 
 	response, err := client.UserGetAllProblems(ctx, &pb.UserNoParam{})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})

@@ -44,7 +44,7 @@ message AdminTestcaseResponse {
 }
 
 message AdUpdateTestCaseRequest {
-    string test_case_id = 1; // The ID of the test case being updated
+    string test_case_id = 1;
     int32 problem_id = 2;
     repeated AdTestCase test_cases = 3;
 }
@@ -74,7 +74,7 @@ message Problem{
     string Title = 2;
     string Discription = 3;
     string Difficulty = 4;
-    string Tags = 5;
+    string Type = 5;
     bool IsPremium = 6;
 }
 

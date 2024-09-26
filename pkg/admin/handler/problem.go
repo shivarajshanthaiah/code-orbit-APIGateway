@@ -30,20 +30,20 @@ func InsertProblemHanlder(c *gin.Context, client pb.AdminServiceClient) {
 		Title:       problem.Title,
 		Discription: problem.Description,
 		Difficulty:  problem.Difficulty,
-		Tags:        problem.Tags,
+		Type:        problem.Type,
 		IsPremium:   problem.IsPremium,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusAccepted, gin.H{
-		"Status":  http.StatusAccepted,
+	c.JSON(http.StatusCreated, gin.H{
+		"Status":  http.StatusCreated,
 		"Message": "problem added successfully",
 		"Data":    response,
 	})
@@ -56,8 +56,8 @@ func AdminGetAllProblemsHandler(c *gin.Context, client pb.AdminServiceClient) {
 
 	response, err := client.AdminGetAllProblems(ctx, &pb.AdNoParam{})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
@@ -160,13 +160,13 @@ func EditProblemHandler(c *gin.Context, client pb.AdminServiceClient) {
 		Title:       problem.Title,
 		Discription: problem.Description,
 		Difficulty:  problem.Difficulty,
-		Tags:        problem.Tags,
+		Type:        problem.Type,
 		IsPremium:   problem.IsPremium,
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "Error in client response",
 			"Error":   err.Error(),
 		})
@@ -188,7 +188,8 @@ func AdminUpgradeProblemHandler(c *gin.Context, client pb.AdminServiceClient) {
 	problemIdStr := c.Param("id")
 	problemId, err := strconv.Atoi(problemIdStr)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"Status": http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status": http.StatusBadRequest,
 			"Message": "error while converting userID to int",
 			"Error":   err.Error()})
 		return
@@ -197,10 +198,10 @@ func AdminUpgradeProblemHandler(c *gin.Context, client pb.AdminServiceClient) {
 	response, err := client.AdminUpgradeProbem(ctx, &pb.AdProblemId{
 		ID: uint32(problemId),
 	})
-	
+
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error()})
 		return

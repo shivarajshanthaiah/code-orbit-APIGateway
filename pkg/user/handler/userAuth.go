@@ -32,8 +32,8 @@ func UserSignupHandler(c *gin.Context, client pb.UserServiceClient) {
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Data":    response,
 			"Error":   err.Error()})
@@ -77,8 +77,8 @@ func VerificationHandler(c *gin.Context, client pb.UserServiceClient) {
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Data":    response,
 			"Error":   err.Error()})
@@ -111,8 +111,8 @@ func UserLoginHandler(c *gin.Context, client pb.UserServiceClient) {
 		Password: user.Password,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client request",
 			"Error":   err.Error()})
 		return

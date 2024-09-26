@@ -30,8 +30,8 @@ func AdminLoginHandler(c *gin.Context, client pb.AdminServiceClient) {
 		Password: admin.Password,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"Status":  http.StatusBadRequest,
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
 			"Message": "error in client response",
 			"Error":   err.Error(),
 		})
