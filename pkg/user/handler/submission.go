@@ -26,12 +26,6 @@ func SubmitCodeHandler(c *gin.Context, client pb.UserServiceClient) {
 
 	var submissionRequest model.Submission
 
-	// var submissionRequest struct {
-	// 	ProblemID int    `json:"problem_id"`
-	// 	Language  string `json:"language"`
-	// 	Code      string `json:"code"`
-	// }
-
 	if err := c.BindJSON(&submissionRequest); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"Status":  http.StatusBadRequest,
@@ -50,8 +44,8 @@ func SubmitCodeHandler(c *gin.Context, client pb.UserServiceClient) {
 
 	response, err := client.SubmitCode(ctx, grpcReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"Status":  http.StatusInternalServerError,
+		c.JSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
 			"Message": "Failed to submit code",
 			"Error":   err.Error(),
 		})
