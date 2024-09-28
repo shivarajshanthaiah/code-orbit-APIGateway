@@ -40,3 +40,7 @@ func (u *User) UGetProblemByID(ctx *gin.Context) {
 func (u *User) SubmitCode(ctx *gin.Context) {
 	handler.SubmitCodeHandler(ctx, u.Client)
 }
+
+func (u *User) GetUserStats(ctx *gin.Context){
+	handler.GetUserStatsHandler(ctx, u.Client)
+}

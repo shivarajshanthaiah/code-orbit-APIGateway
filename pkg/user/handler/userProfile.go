@@ -159,3 +159,47 @@ func ChangePasswordHandler(c *gin.Context, client pb.UserServiceClient) {
 	})
 
 }
+
+func GetUserStatsHandler(c *gin.Context, client pb.UserServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "error while fetching user ID from context",
+			"Error":   ""})
+		return
+	}
+
+	userID, ok := id.(string)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "Error while user id conversion",
+			"Error":   ""})
+		return
+	}
+
+	response, err := client.GetUserStats(ctx, &pb.ID{
+		ID: userID,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": "Error fetching user stats",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Status":  http.StatusOK,
+		"Message": "User stats fetched successfully",
+		"Data":    response,
+	})
+
+}

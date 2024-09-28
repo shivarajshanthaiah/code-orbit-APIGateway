@@ -44,5 +44,6 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 		auth.GET("/get/problem/:id", userHandler.UGetProblemByID)
 
 		auth.POST("/submit/code", userHandler.SubmitCode)
+		auth.GET("/get/stats", userHandler.GetUserStats)
 	}
 }

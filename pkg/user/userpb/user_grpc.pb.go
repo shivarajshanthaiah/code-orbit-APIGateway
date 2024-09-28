@@ -32,6 +32,7 @@ type UserServiceClient interface {
 	UserGetAllProblems(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UserProblemList, error)
 	UserGetProblemWithTestCases(ctx context.Context, in *UserProblemId, opts ...grpc.CallOption) (*UserTestcaseResponse, error)
 	SubmitCode(ctx context.Context, in *UserSubmissionRequest, opts ...grpc.CallOption) (*UserSubmissionResponse, error)
+	GetUserStats(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserStatsResponse, error)
 }
 
 type userServiceClient struct {
@@ -132,6 +133,15 @@ func (c *userServiceClient) SubmitCode(ctx context.Context, in *UserSubmissionRe
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserStats(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserStatsResponse, error) {
+	out := new(UserStatsResponse)
+	err := c.cc.Invoke(ctx, "/pb.UserService/GetUserStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type UserServiceServer interface {
 	UserGetAllProblems(context.Context, *UserNoParam) (*UserProblemList, error)
 	UserGetProblemWithTestCases(context.Context, *UserProblemId) (*UserTestcaseResponse, error)
 	SubmitCode(context.Context, *UserSubmissionRequest) (*UserSubmissionResponse, error)
+	GetUserStats(context.Context, *ID) (*UserStatsResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedUserServiceServer) UserGetProblemWithTestCases(context.Contex
 }
 func (UnimplementedUserServiceServer) SubmitCode(context.Context, *UserSubmissionRequest) (*UserSubmissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitCode not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserStats(context.Context, *ID) (*UserStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserStats not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -376,6 +390,24 @@ func _UserService_SubmitCode_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/GetUserStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserStats(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SubmitCode",
 			Handler:    _UserService_SubmitCode_Handler,
+		},
+		{
+			MethodName: "GetUserStats",
+			Handler:    _UserService_GetUserStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
