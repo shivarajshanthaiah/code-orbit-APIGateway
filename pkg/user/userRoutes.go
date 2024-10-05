@@ -45,5 +45,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 
 		auth.POST("/submit/code", userHandler.SubmitCode)
 		auth.GET("/get/stats", userHandler.GetUserStats)
+
+		auth.GET("/get/all/plans", userHandler.GetAllPlans)
 	}
 }

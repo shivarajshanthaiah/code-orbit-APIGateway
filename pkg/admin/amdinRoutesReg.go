@@ -45,11 +45,22 @@ func (a *Admin) UpdateTestCases(ctx *gin.Context) {
 	handler.UpdateTestCaseHandler(ctx, a.Client)
 }
 
-
-func (a *Admin) GetProblemWithTestCases(ctx *gin.Context){
+func (a *Admin) GetProblemWithTestCases(ctx *gin.Context) {
 	handler.GetProblemWithTestCasesHandler(ctx, a.Client)
 }
 
-func (a *Admin) UpgradeProblem(ctx *gin.Context){
+func (a *Admin) UpgradeProblem(ctx *gin.Context) {
 	handler.AdminUpgradeProblemHandler(ctx, a.Client)
+}
+
+func (a *Admin) AddSubPlan(ctx *gin.Context) {
+	handler.AddSubscriptionHandler(ctx, a.Client)
+}
+
+func (a *Admin) GetAllPlans(ctx *gin.Context) {
+	handler.AdminGetAllPlansHandler(ctx, a.Client)
+}
+
+func (a *Admin) UpdateSubPlan(ctx *gin.Context) {
+	handler.UpdatePlanHandler(ctx, a.Client)
 }

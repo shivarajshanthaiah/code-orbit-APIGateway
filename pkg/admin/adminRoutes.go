@@ -44,10 +44,14 @@ func NewAdminRoute(c *gin.Engine, cfg config.Config) {
 		auth.GET("/get/all/problem", adminHandler.GetAllProblems)
 		auth.PUT("/edit/problem/:id", adminHandler.EditProblem)
 		auth.PATCH("/upgrade/problem/:id", adminHandler.UpgradeProblem)
-		
+
 		auth.POST("/insert/testcases", adminHandler.InsertTestCases)
 		auth.PUT("/update/testcases", adminHandler.UpdateTestCases)
 		auth.GET("/get/problem/:id", adminHandler.GetProblemWithTestCases)
-		
+
+		auth.POST("/add/subscription/plan", adminHandler.AddSubPlan)
+		auth.GET("/get/all/plans", adminHandler.GetAllPlans)
+		auth.PUT("/update/plan/:id", adminHandler.UpdateSubPlan)
+
 	}
 }

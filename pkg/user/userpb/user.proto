@@ -21,7 +21,19 @@ service UserService{
 
     rpc SubmitCode (UserSubmissionRequest) returns (UserSubmissionResponse);
     rpc GetUserStats(ID) returns(UserStatsResponse);
+    rpc UserGetAllPlans(UserNoParam) returns(UPlanList);
+}
 
+message UPlanList {
+    repeated USubscription plans = 1;
+}
+
+message USubscription {
+    uint32 ID = 1;
+    string plan = 2;      
+    double price = 3;      
+    double gst = 4;        
+    double total_price = 5;
 }
 
 message UserStatsResponse {

@@ -44,3 +44,7 @@ func (u *User) SubmitCode(ctx *gin.Context) {
 func (u *User) GetUserStats(ctx *gin.Context){
 	handler.GetUserStatsHandler(ctx, u.Client)
 }
+
+func (u *User) GetAllPlans(ctx *gin.Context){
+	handler.UserGetAllPlans(ctx, u.Client)
+}

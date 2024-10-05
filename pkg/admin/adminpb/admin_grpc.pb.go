@@ -34,6 +34,9 @@ type AdminServiceClient interface {
 	InsertTestCases(ctx context.Context, in *AdTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	UpdateTestCases(ctx context.Context, in *AdUpdateTestCaseRequest, opts ...grpc.CallOption) (*AdminResponse, error)
 	GetProblemWithTestCases(ctx context.Context, in *AdProblemId, opts ...grpc.CallOption) (*AdminTestcaseResponse, error)
+	AddSubscriptionPlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdminResponse, error)
+	GetAllPlans(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdPlanList, error)
+	AdminUpdatePlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdSubscription, error)
 }
 
 type adminServiceClient struct {
@@ -152,6 +155,33 @@ func (c *adminServiceClient) GetProblemWithTestCases(ctx context.Context, in *Ad
 	return out, nil
 }
 
+func (c *adminServiceClient) AddSubscriptionPlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AddSubscriptionPlan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) GetAllPlans(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdPlanList, error) {
+	out := new(AdPlanList)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/GetAllPlans", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) AdminUpdatePlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdSubscription, error) {
+	out := new(AdSubscription)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminUpdatePlan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -168,6 +198,9 @@ type AdminServiceServer interface {
 	InsertTestCases(context.Context, *AdTestCaseRequest) (*AdminResponse, error)
 	UpdateTestCases(context.Context, *AdUpdateTestCaseRequest) (*AdminResponse, error)
 	GetProblemWithTestCases(context.Context, *AdProblemId) (*AdminTestcaseResponse, error)
+	AddSubscriptionPlan(context.Context, *AdSubscription) (*AdminResponse, error)
+	GetAllPlans(context.Context, *AdNoParam) (*AdPlanList, error)
+	AdminUpdatePlan(context.Context, *AdSubscription) (*AdSubscription, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -210,6 +243,15 @@ func (UnimplementedAdminServiceServer) UpdateTestCases(context.Context, *AdUpdat
 }
 func (UnimplementedAdminServiceServer) GetProblemWithTestCases(context.Context, *AdProblemId) (*AdminTestcaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProblemWithTestCases not implemented")
+}
+func (UnimplementedAdminServiceServer) AddSubscriptionPlan(context.Context, *AdSubscription) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddSubscriptionPlan not implemented")
+}
+func (UnimplementedAdminServiceServer) GetAllPlans(context.Context, *AdNoParam) (*AdPlanList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPlans not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminUpdatePlan(context.Context, *AdSubscription) (*AdSubscription, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminUpdatePlan not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -440,6 +482,60 @@ func _AdminService_GetProblemWithTestCases_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_AddSubscriptionPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdSubscription)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AddSubscriptionPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AddSubscriptionPlan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AddSubscriptionPlan(ctx, req.(*AdSubscription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_GetAllPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdNoParam)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).GetAllPlans(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/GetAllPlans",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).GetAllPlans(ctx, req.(*AdNoParam))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_AdminUpdatePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdSubscription)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminUpdatePlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminUpdatePlan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminUpdatePlan(ctx, req.(*AdSubscription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +590,18 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProblemWithTestCases",
 			Handler:    _AdminService_GetProblemWithTestCases_Handler,
+		},
+		{
+			MethodName: "AddSubscriptionPlan",
+			Handler:    _AdminService_AddSubscriptionPlan_Handler,
+		},
+		{
+			MethodName: "GetAllPlans",
+			Handler:    _AdminService_GetAllPlans_Handler,
+		},
+		{
+			MethodName: "AdminUpdatePlan",
+			Handler:    _AdminService_AdminUpdatePlan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
