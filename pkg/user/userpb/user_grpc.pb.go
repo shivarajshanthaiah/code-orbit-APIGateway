@@ -34,6 +34,7 @@ type UserServiceClient interface {
 	SubmitCode(ctx context.Context, in *UserSubmissionRequest, opts ...grpc.CallOption) (*UserSubmissionResponse, error)
 	GetUserStats(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserStatsResponse, error)
 	UserGetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error)
+	GenerateInvoice(ctx context.Context, in *InvoiceRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type userServiceClient struct {
@@ -152,6 +153,15 @@ func (c *userServiceClient) UserGetAllPlans(ctx context.Context, in *UserNoParam
 	return out, nil
 }
 
+func (c *userServiceClient) GenerateInvoice(ctx context.Context, in *InvoiceRequest, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/pb.UserService/GenerateInvoice", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -168,6 +178,7 @@ type UserServiceServer interface {
 	SubmitCode(context.Context, *UserSubmissionRequest) (*UserSubmissionResponse, error)
 	GetUserStats(context.Context, *ID) (*UserStatsResponse, error)
 	UserGetAllPlans(context.Context, *UserNoParam) (*UPlanList, error)
+	GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -210,6 +221,9 @@ func (UnimplementedUserServiceServer) GetUserStats(context.Context, *ID) (*UserS
 }
 func (UnimplementedUserServiceServer) UserGetAllPlans(context.Context, *UserNoParam) (*UPlanList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserGetAllPlans not implemented")
+}
+func (UnimplementedUserServiceServer) GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateInvoice not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -440,6 +454,24 @@ func _UserService_UserGetAllPlans_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GenerateInvoice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InvoiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GenerateInvoice(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/GenerateInvoice",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GenerateInvoice(ctx, req.(*InvoiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -494,6 +526,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserGetAllPlans",
 			Handler:    _UserService_UserGetAllPlans_Handler,
+		},
+		{
+			MethodName: "GenerateInvoice",
+			Handler:    _UserService_GenerateInvoice_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

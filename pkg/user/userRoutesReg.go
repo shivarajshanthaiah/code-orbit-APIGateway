@@ -41,10 +41,14 @@ func (u *User) SubmitCode(ctx *gin.Context) {
 	handler.SubmitCodeHandler(ctx, u.Client)
 }
 
-func (u *User) GetUserStats(ctx *gin.Context){
+func (u *User) GetUserStats(ctx *gin.Context) {
 	handler.GetUserStatsHandler(ctx, u.Client)
 }
 
-func (u *User) GetAllPlans(ctx *gin.Context){
+func (u *User) GetAllPlans(ctx *gin.Context) {
 	handler.UserGetAllPlans(ctx, u.Client)
+}
+
+func (u *User) GenerateInvoice(ctx *gin.Context) {
+	handler.GenerateInvoiceHandler(ctx, u.Client)
 }

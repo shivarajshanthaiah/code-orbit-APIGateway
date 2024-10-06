@@ -28,6 +28,7 @@ func AddSubscriptionHandler(c *gin.Context, client pb.AdminServiceClient) {
 
 	response, err := client.AddSubscriptionPlan(ctx, &pb.AdSubscription{
 		Plan:       plan.Plan,
+		Duration:   plan.Duration,
 		Price:      plan.Price,
 		Gst:        plan.GST,
 		TotalPrice: plan.TotalPrice,
@@ -79,6 +80,7 @@ func UpdatePlanHandler(c *gin.Context, client pb.AdminServiceClient) {
 	response, err := client.AdminUpdatePlan(ctx, &pb.AdSubscription{
 		ID:         uint32(planID),
 		Plan:       plan.Plan,
+		Duration:   plan.Duration,
 		Price:      plan.Price,
 		Gst:        plan.GST,
 		TotalPrice: plan.TotalPrice,

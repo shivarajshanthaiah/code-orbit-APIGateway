@@ -35,10 +35,11 @@ message AdPlanList {
 
 message AdSubscription {
     uint32 ID = 1;
-    string plan = 2;      
-    double price = 3;      
-    double gst = 4;        
-    double total_price = 5;
+    string plan = 2; 
+    string duration = 3;     
+    double price = 4;      
+    double gst = 5;        
+    double total_price = 6;
 }
 
 message AdProblemWithTestCases {
