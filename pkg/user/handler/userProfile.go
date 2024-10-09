@@ -10,11 +10,53 @@ import (
 	pb "github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/user/userpb"
 )
 
+// func ViewProfileHandler(c *gin.Context, client pb.UserServiceClient) {
+// 	timeout := time.Second * 100
+// 	ctx, cancel := context.WithTimeout(c, timeout)
+// 	defer cancel()
+
+// 	id, ok := c.Get("user_id")
+// 	if !ok {
+// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+// 			"Status":  http.StatusBadRequest,
+// 			"Message": "error while fetching user ID from context",
+// 			"Error":   ""})
+// 		return
+// 	}
+
+// 	userID, ok := id.(string)
+// 	if !ok {
+// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+// 			"Status":  http.StatusBadRequest,
+// 			"Message": "Error while user id conversion",
+// 			"Error":   ""})
+// 		return
+// 	}
+
+// 	response, err := client.ViewProfile(ctx, &pb.ID{
+// 		ID: string(userID),
+// 	})
+// 	if err != nil {
+// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+// 			"Status":  http.StatusBadRequest,
+// 			"Message": "error in client response",
+// 			"Data":    response,
+// 			"Error":   err.Error()})
+// 		return
+// 	}
+// 	c.JSON(http.StatusAccepted, gin.H{
+// 		"Status":  http.StatusAccepted,
+// 		"Message": "profile fetched successfully",
+// 		"Data":    response,
+// 	})
+// }
+
 func ViewProfileHandler(c *gin.Context, client pb.UserServiceClient) {
 	timeout := time.Second * 100
 	ctx, cancel := context.WithTimeout(c, timeout)
 	defer cancel()
 
+	// Fetch user ID from context
 	id, ok := c.Get("user_id")
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -33,8 +75,9 @@ func ViewProfileHandler(c *gin.Context, client pb.UserServiceClient) {
 		return
 	}
 
+	// Call ViewProfile from the gRPC client
 	response, err := client.ViewProfile(ctx, &pb.ID{
-		ID: string(userID),
+		ID: userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -44,10 +87,22 @@ func ViewProfileHandler(c *gin.Context, client pb.UserServiceClient) {
 			"Error":   err.Error()})
 		return
 	}
+
+	// Convert protobuf Timestamp to time.Time for easier formatting (if needed)
+	expiryTime := response.Membership_Expiry_Date.AsTime()
+
+	// Send the response as JSON
 	c.JSON(http.StatusAccepted, gin.H{
 		"Status":  http.StatusAccepted,
 		"Message": "profile fetched successfully",
-		"Data":    response,
+		"Data": gin.H{
+			"User_ID":                response.User_ID,
+			"User_Name":              response.User_Name,
+			"Email":                  response.Email,
+			"Phone":                  response.Phone,
+			"Is_Prime_Member":        response.Is_Prime_Member,
+			"Membership_Expiry_Date": expiryTime.Format("2006-01-02 15:04:05"), // Format to readable date string
+		},
 	})
 }
 

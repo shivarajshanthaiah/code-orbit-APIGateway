@@ -52,3 +52,15 @@ func (u *User) GetAllPlans(ctx *gin.Context) {
 func (u *User) GenerateInvoice(ctx *gin.Context) {
 	handler.GenerateInvoiceHandler(ctx, u.Client)
 }
+
+func (u *User) MakePayment(ctx *gin.Context) {
+	handler.MakePaymentHandler(ctx, u.Client)
+}
+
+func (u *User) ConfirmPayment(ctx *gin.Context) {
+	handler.PaymentSuccessHandler(ctx, u.Client)
+}
+
+func (u *User) SuccessPage(ctx *gin.Context) {
+	handler.PaymentSuccessPage(ctx, u.Client)
+}

@@ -31,6 +31,11 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 		user.POST("/signup", userHandler.UserSignup)
 		user.POST("/verify", userHandler.UserVerify)
 		user.POST("/login", userHandler.UserLogin)
+
+		user.GET("/payment/initiate", userHandler.MakePayment)
+		user.GET("/payment/success", userHandler.ConfirmPayment)
+		user.GET("/success/render", userHandler.SuccessPage)
+		
 	}
 
 	auth := user.Group("/auth")

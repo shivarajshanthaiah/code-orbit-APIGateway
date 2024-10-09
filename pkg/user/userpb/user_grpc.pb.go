@@ -35,6 +35,8 @@ type UserServiceClient interface {
 	GetUserStats(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserStatsResponse, error)
 	UserGetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error)
 	GenerateInvoice(ctx context.Context, in *InvoiceRequest, opts ...grpc.CallOption) (*Response, error)
+	MakePayment(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error)
+	PaymentSuccess(ctx context.Context, in *ConfirmRequest, opts ...grpc.CallOption) (*ConfirmResponse, error)
 }
 
 type userServiceClient struct {
@@ -162,6 +164,24 @@ func (c *userServiceClient) GenerateInvoice(ctx context.Context, in *InvoiceRequ
 	return out, nil
 }
 
+func (c *userServiceClient) MakePayment(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error) {
+	out := new(PaymentResponse)
+	err := c.cc.Invoke(ctx, "/pb.UserService/MakePayment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) PaymentSuccess(ctx context.Context, in *ConfirmRequest, opts ...grpc.CallOption) (*ConfirmResponse, error) {
+	out := new(ConfirmResponse)
+	err := c.cc.Invoke(ctx, "/pb.UserService/PaymentSuccess", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -179,6 +199,8 @@ type UserServiceServer interface {
 	GetUserStats(context.Context, *ID) (*UserStatsResponse, error)
 	UserGetAllPlans(context.Context, *UserNoParam) (*UPlanList, error)
 	GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error)
+	MakePayment(context.Context, *PaymentRequest) (*PaymentResponse, error)
+	PaymentSuccess(context.Context, *ConfirmRequest) (*ConfirmResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -224,6 +246,12 @@ func (UnimplementedUserServiceServer) UserGetAllPlans(context.Context, *UserNoPa
 }
 func (UnimplementedUserServiceServer) GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateInvoice not implemented")
+}
+func (UnimplementedUserServiceServer) MakePayment(context.Context, *PaymentRequest) (*PaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MakePayment not implemented")
+}
+func (UnimplementedUserServiceServer) PaymentSuccess(context.Context, *ConfirmRequest) (*ConfirmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaymentSuccess not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -472,6 +500,42 @@ func _UserService_GenerateInvoice_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_MakePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).MakePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/MakePayment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).MakePayment(ctx, req.(*PaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_PaymentSuccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).PaymentSuccess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/PaymentSuccess",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).PaymentSuccess(ctx, req.(*ConfirmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -530,6 +594,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateInvoice",
 			Handler:    _UserService_GenerateInvoice_Handler,
+		},
+		{
+			MethodName: "MakePayment",
+			Handler:    _UserService_MakePayment_Handler,
+		},
+		{
+			MethodName: "PaymentSuccess",
+			Handler:    _UserService_PaymentSuccess_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

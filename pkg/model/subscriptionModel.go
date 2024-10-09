@@ -5,5 +5,5 @@ type Subscription struct {
 	Duration   string  `json:"duration"`
 	Price      float64 `json:"price"`
 	GST        float64 `json:"gst"`
-	TotalPrice float64 `json:"total_price"`
+	TotalPrice uint32 `json:"total_price"`
 }

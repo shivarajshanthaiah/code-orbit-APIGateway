@@ -7,7 +7,7 @@ type Config struct {
 	SECRETKEY string `mapstructure:"SECRETKEY"`
 	USERPORT  string `mapstructure:"USERPORT"`
 	ADMINPORT string `mapstructure:"ADMINPORT"`
-	// RAZORPAY  string `mapstructure:"RAZORPAY"`
+	RAZORPAY  string `mapstructure:"RAZORPAY"`
 }
 
 func LoadConfig() (*Config, error) {
