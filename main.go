@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/admin"
+	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/chat"
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/config"
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/server"
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/user"
@@ -19,5 +20,6 @@ func main() {
 	server.R.LoadHTMLGlob("templates/*")
 	user.NewUserRoute(server.R, *cnfg)
 	admin.NewAdminRoute(server.R, *cnfg)
+	chat.NewChatRoutes(server.R, *cnfg)
 	server.StartServer(cnfg.APIPORT)
 }

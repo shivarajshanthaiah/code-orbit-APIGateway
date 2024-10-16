@@ -8,6 +8,7 @@ type Config struct {
 	USERPORT  string `mapstructure:"USERPORT"`
 	ADMINPORT string `mapstructure:"ADMINPORT"`
 	RAZORPAY  string `mapstructure:"RAZORPAY"`
+	CHATPORT  string `mapstructure:"CHATPORT"`
 }
 
 func LoadConfig() (*Config, error) {

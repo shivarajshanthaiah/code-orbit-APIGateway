@@ -15,6 +15,6 @@ func ClientDial(cfg config.Config) (pb.AdminServiceClient, error) {
 		log.Printf("Error dialing to grpc to client : %s", err.Error())
 		return nil, err
 	}
-	log.Printf("Successfully connected to user client at port : %s", cfg.USERPORT)
+	log.Printf("Successfully connected to admin client at port : %s", cfg.ADMINPORT)
 	return pb.NewAdminServiceClient(grpc), nil
 }
