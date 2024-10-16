@@ -13,10 +13,14 @@ func (c *Chat) ChatScreen(ctx *gin.Context) {
 	handler.ChatScreen(ctx, c.client)
 }
 
-func (c *Chat) AddComment(ctx *gin.Context){
+func (c *Chat) AddComment(ctx *gin.Context) {
 	handler.AddComment(ctx, c.client)
 }
 
-func (c *Chat) ReplyToComment(ctx *gin.Context){
+func (c *Chat) ReplyToComment(ctx *gin.Context) {
 	handler.ReplyToComment(ctx, c.client)
+}
+
+func (c *Chat) GetComments(ctx *gin.Context) {
+	handler.GetCommentsForProblem(ctx, c.client)
 }

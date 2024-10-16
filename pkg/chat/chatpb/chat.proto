@@ -43,8 +43,8 @@ message Comment {
     uint32 problem_id = 2;
     string user_id = 3;
     string content = 4;
-    string created_at = 5;
-    string parent_comment_id = 6;
+    string parent_comment_id = 5;
+    repeated Comment replies = 6;
 }
 
 message Message {

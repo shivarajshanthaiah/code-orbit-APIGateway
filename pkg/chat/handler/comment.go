@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -123,5 +124,39 @@ func ReplyToComment(c *gin.Context, client pb.ChatServiceClient) {
 		"Status":  http.StatusCreated,
 		"Message": "Reply added successfully",
 		"Data":    response,
+	})
+}
+
+func GetCommentsForProblem(c *gin.Context, client pb.ChatServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	problemIDParam := c.Param("id")
+	problemID, err := strconv.Atoi(problemIDParam)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "Invalid problem ID",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	response, err := client.FetchComments(ctx, &pb.FetchCommentsRequest{
+		ProblemId: uint32(problemID),
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": "Error fetching comments",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Status":   http.StatusOK,
+		"Comments": response.Comments,
 	})
 }
