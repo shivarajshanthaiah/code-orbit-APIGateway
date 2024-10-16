@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/middleware"
 	pb "github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/chat/chatpb"
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/config"
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/user"
@@ -40,4 +41,11 @@ func NewChatRoutes(c *gin.Engine, cfg config.Config) {
 		user.GET("/chat", chatHandler.Chat)
 	}
 	c.GET("/chat", chatHandler.ChatScreen)
+
+	auth := user.Group("/auth")
+	auth.Use(middleware.Authorization(cfg.SECRETKEY))
+	{
+		auth.POST("/comment", chatHandler.AddComment)
+		auth.POST("/comment/reply", chatHandler.ReplyToComment)
+	}
 }

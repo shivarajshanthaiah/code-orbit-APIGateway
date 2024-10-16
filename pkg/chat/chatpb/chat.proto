@@ -1,32 +1,3 @@
-// syntax = "proto3";
-
-// package pb;
-
-// option go_package = "./";
-
-// service ChatService{
-//     rpc GetFriendChat (GetFriendChatRequest) returns (GetFriendChatResponse){}
-//   }
-  
-//   message GetFriendChatRequest {
-//     string userId = 1;
-//     string friendId = 2;
-//     string offset = 3;
-//     string limit = 4;
-// }
-
-// message Message {
-//     string messageId = 1;
-//     string senderId = 2;
-//     string recipientId = 3;
-//     string content = 4;
-//     string timestamp = 5;
-// }
-
-// message GetFriendChatResponse {
-//     repeated Message friendChat = 1;
-// }
-
 syntax = "proto3";
 
 package pb;
@@ -36,6 +7,44 @@ option go_package = "./";
 service ChatService {
     rpc Connect (stream Message) returns (stream Message);
     rpc FetchHistory(ChatID) returns (ChatHistory);
+
+    rpc AddComment(CommentRequest) returns (CommentResponse);
+    rpc ReplyToComment(ReplyRequest) returns (CommentResponse);
+    rpc FetchComments(FetchCommentsRequest) returns (FetchCommentsResponse);
+}
+
+message FetchCommentsRequest {
+    uint32 problem_id = 1;
+}
+
+message FetchCommentsResponse {
+    repeated Comment comments = 1;
+}
+
+message CommentRequest {
+    uint32 problem_id = 1;
+    string user_id = 2;
+    string content = 3;
+}
+
+message ReplyRequest {
+    string comment_id = 1;
+    string user_id = 2;
+    string content = 3;
+}
+
+message CommentResponse {
+    string message = 1;
+    Comment comment = 2;
+}
+
+message Comment {
+    string id = 1;
+    uint32 problem_id = 2;
+    string user_id = 3;
+    string content = 4;
+    string created_at = 5;
+    string parent_comment_id = 6;
 }
 
 message Message {
