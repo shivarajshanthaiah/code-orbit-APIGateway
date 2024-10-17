@@ -27,6 +27,7 @@ type ChatServiceClient interface {
 	AddComment(ctx context.Context, in *CommentRequest, opts ...grpc.CallOption) (*CommentResponse, error)
 	ReplyToComment(ctx context.Context, in *ReplyRequest, opts ...grpc.CallOption) (*CommentResponse, error)
 	FetchComments(ctx context.Context, in *FetchCommentsRequest, opts ...grpc.CallOption) (*FetchCommentsResponse, error)
+	FetchUserComments(ctx context.Context, in *FetchUserCommentsRequest, opts ...grpc.CallOption) (*FetchUserCommentsResponse, error)
 }
 
 type chatServiceClient struct {
@@ -104,6 +105,15 @@ func (c *chatServiceClient) FetchComments(ctx context.Context, in *FetchComments
 	return out, nil
 }
 
+func (c *chatServiceClient) FetchUserComments(ctx context.Context, in *FetchUserCommentsRequest, opts ...grpc.CallOption) (*FetchUserCommentsResponse, error) {
+	out := new(FetchUserCommentsResponse)
+	err := c.cc.Invoke(ctx, "/pb.ChatService/FetchUserComments", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChatServiceServer is the server API for ChatService service.
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type ChatServiceServer interface {
 	AddComment(context.Context, *CommentRequest) (*CommentResponse, error)
 	ReplyToComment(context.Context, *ReplyRequest) (*CommentResponse, error)
 	FetchComments(context.Context, *FetchCommentsRequest) (*FetchCommentsResponse, error)
+	FetchUserComments(context.Context, *FetchUserCommentsRequest) (*FetchUserCommentsResponse, error)
 	mustEmbedUnimplementedChatServiceServer()
 }
 
@@ -134,6 +145,9 @@ func (UnimplementedChatServiceServer) ReplyToComment(context.Context, *ReplyRequ
 }
 func (UnimplementedChatServiceServer) FetchComments(context.Context, *FetchCommentsRequest) (*FetchCommentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchComments not implemented")
+}
+func (UnimplementedChatServiceServer) FetchUserComments(context.Context, *FetchUserCommentsRequest) (*FetchUserCommentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchUserComments not implemented")
 }
 func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
 
@@ -246,6 +260,24 @@ func _ChatService_FetchComments_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatService_FetchUserComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchUserCommentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChatServiceServer).FetchUserComments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.ChatService/FetchUserComments",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChatServiceServer).FetchUserComments(ctx, req.(*FetchUserCommentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ChatService_ServiceDesc is the grpc.ServiceDesc for ChatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -268,6 +300,10 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchComments",
 			Handler:    _ChatService_FetchComments_Handler,
+		},
+		{
+			MethodName: "FetchUserComments",
+			Handler:    _ChatService_FetchUserComments_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -24,3 +24,7 @@ func (c *Chat) ReplyToComment(ctx *gin.Context) {
 func (c *Chat) GetComments(ctx *gin.Context) {
 	handler.GetCommentsForProblem(ctx, c.client)
 }
+
+func (c *Chat) GetUserComments(ctx *gin.Context){
+	handler.GetUserComments(ctx, c.client)
+}

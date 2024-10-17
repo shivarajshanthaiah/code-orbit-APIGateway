@@ -11,6 +11,16 @@ service ChatService {
     rpc AddComment(CommentRequest) returns (CommentResponse);
     rpc ReplyToComment(ReplyRequest) returns (CommentResponse);
     rpc FetchComments(FetchCommentsRequest) returns (FetchCommentsResponse);
+
+    rpc FetchUserComments(FetchUserCommentsRequest) returns (FetchUserCommentsResponse);
+}
+
+message FetchUserCommentsRequest {
+    string user_id = 1;
+}
+
+message FetchUserCommentsResponse {
+    repeated Comment comments = 1;
 }
 
 message FetchCommentsRequest {

@@ -48,5 +48,6 @@ func NewChatRoutes(c *gin.Engine, cfg config.Config) {
 		auth.POST("/comment", chatHandler.AddComment)
 		auth.POST("/comment/reply", chatHandler.ReplyToComment)
 		auth.GET("/discussion/problem/:id", chatHandler.GetComments)
+		auth.GET("/get/all/comments", chatHandler.GetUserComments)
 	}
 }

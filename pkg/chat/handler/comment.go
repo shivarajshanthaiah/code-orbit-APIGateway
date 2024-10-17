@@ -160,3 +160,46 @@ func GetCommentsForProblem(c *gin.Context, client pb.ChatServiceClient) {
 		"Comments": response.Comments,
 	})
 }
+
+func GetUserComments(c *gin.Context, client pb.ChatServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	id, ok := c.Get("user_id")
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "User ID not found in context",
+			"Error":   "",
+		})
+		return
+	}
+
+	userID, ok := id.(string)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"Status":  http.StatusBadRequest,
+			"Message": "Error while user id conversion",
+			"Error":   "",
+		})
+		return
+	}
+
+	response, err := client.FetchUserComments(ctx, &pb.FetchUserCommentsRequest{
+		UserId: userID,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": "Error fetching user comments",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"Status":   http.StatusOK,
+		"Comments": response.Comments,
+	})
+}
