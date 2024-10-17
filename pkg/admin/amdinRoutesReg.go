@@ -72,3 +72,11 @@ func (a *Admin) GetUserStats(ctx *gin.Context) {
 func (a *Admin) GetSubscriptionStats(ctx *gin.Context) {
 	handler.GetSubscriptionStatsHandler(ctx, a.Client)
 }
+
+func (a *Admin) GetProblemStats(ctx *gin.Context){
+	handler.GetProblemStatsHandler(ctx, a.Client)
+}
+
+func (a *Admin) GetLeaderboardStats(ctx *gin.Context){
+	handler.AdminGetLeaderboardHandler(ctx, a.Client)
+}

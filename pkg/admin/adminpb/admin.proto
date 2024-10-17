@@ -29,6 +29,32 @@ service AdminService {
 
     rpc AdminGetUserStats (AdUserStatsRequest) returns (AdUserStatsResponse);
     rpc AdminGetSubscriptionStats (AdSubscriptionStatsRequest) returns (AdSubscriptionStatsResponse);
+    rpc AdminGetProblemStats (AdProblemStatsRequest) returns (AdProblemStatsResponse);
+    rpc AdminGetLeaderboardStats(AdLeaderboardRequest) returns (AdLeaderboardResponse);
+}
+
+message AdLeaderboardRequest {}
+
+message AdLeaderboardEntry {
+    string user_id = 1;
+    int32 solved_count = 2;
+    int32 rank = 3;
+}
+
+message AdLeaderboardResponse {
+    repeated AdLeaderboardEntry leaderboard = 1;
+}
+
+message AdProblemStatsRequest {}
+
+message AdProblemStatsResponse {
+    int32 total_problems = 1;
+    int32 easy_problems = 2;
+    int32 medium_problems = 3;
+    int32 hard_problems = 4;
+    map<string, int32> type_problem_count = 5;
+    int32 premium_problems = 6;
+    int32 non_premium_problems = 7;
 }
 
 message AdSubscriptionStatsRequest {}

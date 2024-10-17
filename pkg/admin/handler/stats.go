@@ -52,3 +52,45 @@ func GetSubscriptionStatsHandler(c *gin.Context, client pb.AdminServiceClient) {
 		"Data":    response,
 	})
 }
+
+func GetProblemStatsHandler(c *gin.Context, client pb.AdminServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	response, err := client.AdminGetProblemStats(ctx, &pb.AdProblemStatsRequest{})
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"Status":  http.StatusInternalServerError,
+			"Message": "error in client response",
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, gin.H{
+		"Status":  http.StatusAccepted,
+		"Message": "Problem stats fetched successfully",
+		"Data":    response,
+	})
+}
+
+func AdminGetLeaderboardHandler(c *gin.Context, adminClient pb.AdminServiceClient) {
+	timeout := time.Second * 100
+	ctx, cancel := context.WithTimeout(c, timeout)
+	defer cancel()
+
+	response, err := adminClient.AdminGetLeaderboardStats(ctx, &pb.AdLeaderboardRequest{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "error in admin client response",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   response.Leaderboard,
+	})
+}
