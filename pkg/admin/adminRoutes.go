@@ -53,5 +53,8 @@ func NewAdminRoute(c *gin.Engine, cfg config.Config) {
 		auth.GET("/get/all/plans", adminHandler.GetAllPlans)
 		auth.PUT("/update/plan/:id", adminHandler.UpdateSubPlan)
 
+		auth.GET("/get/user/stats", adminHandler.GetUserStats)
+		auth.GET("/get/subscription/stats", adminHandler.GetSubscriptionStats)
+
 	}
 }

@@ -37,6 +37,8 @@ type AdminServiceClient interface {
 	AddSubscriptionPlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdminResponse, error)
 	GetAllPlans(ctx context.Context, in *AdNoParam, opts ...grpc.CallOption) (*AdPlanList, error)
 	AdminUpdatePlan(ctx context.Context, in *AdSubscription, opts ...grpc.CallOption) (*AdSubscription, error)
+	AdminGetUserStats(ctx context.Context, in *AdUserStatsRequest, opts ...grpc.CallOption) (*AdUserStatsResponse, error)
+	AdminGetSubscriptionStats(ctx context.Context, in *AdSubscriptionStatsRequest, opts ...grpc.CallOption) (*AdSubscriptionStatsResponse, error)
 }
 
 type adminServiceClient struct {
@@ -182,6 +184,24 @@ func (c *adminServiceClient) AdminUpdatePlan(ctx context.Context, in *AdSubscrip
 	return out, nil
 }
 
+func (c *adminServiceClient) AdminGetUserStats(ctx context.Context, in *AdUserStatsRequest, opts ...grpc.CallOption) (*AdUserStatsResponse, error) {
+	out := new(AdUserStatsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminGetUserStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) AdminGetSubscriptionStats(ctx context.Context, in *AdSubscriptionStatsRequest, opts ...grpc.CallOption) (*AdSubscriptionStatsResponse, error) {
+	out := new(AdSubscriptionStatsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminService/AdminGetSubscriptionStats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminServiceServer is the server API for AdminService service.
 // All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
@@ -201,6 +221,8 @@ type AdminServiceServer interface {
 	AddSubscriptionPlan(context.Context, *AdSubscription) (*AdminResponse, error)
 	GetAllPlans(context.Context, *AdNoParam) (*AdPlanList, error)
 	AdminUpdatePlan(context.Context, *AdSubscription) (*AdSubscription, error)
+	AdminGetUserStats(context.Context, *AdUserStatsRequest) (*AdUserStatsResponse, error)
+	AdminGetSubscriptionStats(context.Context, *AdSubscriptionStatsRequest) (*AdSubscriptionStatsResponse, error)
 	mustEmbedUnimplementedAdminServiceServer()
 }
 
@@ -252,6 +274,12 @@ func (UnimplementedAdminServiceServer) GetAllPlans(context.Context, *AdNoParam) 
 }
 func (UnimplementedAdminServiceServer) AdminUpdatePlan(context.Context, *AdSubscription) (*AdSubscription, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminUpdatePlan not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminGetUserStats(context.Context, *AdUserStatsRequest) (*AdUserStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminGetUserStats not implemented")
+}
+func (UnimplementedAdminServiceServer) AdminGetSubscriptionStats(context.Context, *AdSubscriptionStatsRequest) (*AdSubscriptionStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminGetSubscriptionStats not implemented")
 }
 func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
@@ -536,6 +564,42 @@ func _AdminService_AdminUpdatePlan_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminService_AdminGetUserStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdUserStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminGetUserStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminGetUserStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminGetUserStats(ctx, req.(*AdUserStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_AdminGetSubscriptionStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdSubscriptionStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AdminGetSubscriptionStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminService/AdminGetSubscriptionStats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AdminGetSubscriptionStats(ctx, req.(*AdSubscriptionStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -602,6 +666,14 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminUpdatePlan",
 			Handler:    _AdminService_AdminUpdatePlan_Handler,
+		},
+		{
+			MethodName: "AdminGetUserStats",
+			Handler:    _AdminService_AdminGetUserStats_Handler,
+		},
+		{
+			MethodName: "AdminGetSubscriptionStats",
+			Handler:    _AdminService_AdminGetSubscriptionStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

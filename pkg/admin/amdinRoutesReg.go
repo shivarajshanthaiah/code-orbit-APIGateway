@@ -64,3 +64,11 @@ func (a *Admin) GetAllPlans(ctx *gin.Context) {
 func (a *Admin) UpdateSubPlan(ctx *gin.Context) {
 	handler.UpdatePlanHandler(ctx, a.Client)
 }
+
+func (a *Admin) GetUserStats(ctx *gin.Context) {
+	handler.GetAllUserStatsHandler(ctx, a.Client)
+}
+
+func (a *Admin) GetSubscriptionStats(ctx *gin.Context) {
+	handler.GetSubscriptionStatsHandler(ctx, a.Client)
+}

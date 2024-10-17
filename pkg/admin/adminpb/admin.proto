@@ -27,6 +27,30 @@ service AdminService {
     rpc GetAllPlans(AdNoParam) returns(AdPlanList);
     rpc AdminUpdatePlan(AdSubscription) returns(AdSubscription);
 
+    rpc AdminGetUserStats (AdUserStatsRequest) returns (AdUserStatsResponse);
+    rpc AdminGetSubscriptionStats (AdSubscriptionStatsRequest) returns (AdSubscriptionStatsResponse);
+}
+
+message AdSubscriptionStatsRequest {}
+
+message AdSubscriptionStatsResponse {
+    int32 basic_plan_subscribers = 1;
+    int32 standard_plan_subscribers = 2;
+    int32 premium_plan_subscribers = 3;
+    uint32 total_amount_collected_lifetime = 4;
+    uint32 total_amount_collected_weekly = 5;
+    uint32 total_amount_collected_monthly = 6;
+    uint32 total_amount_collected_yearly = 7;
+}
+
+message AdUserStatsRequest {}
+
+message AdUserStatsResponse {
+    int32 total_users = 1;
+    int32 active_users = 2;
+    int32 blocked_users = 3;
+    int32 prime_users = 4;
+    int32 non_prime_users = 5;
 }
 
 message AdPlanList {
