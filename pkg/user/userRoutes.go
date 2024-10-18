@@ -35,7 +35,7 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 		user.GET("/payment/initiate", userHandler.MakePayment)
 		user.GET("/payment/success", userHandler.ConfirmPayment)
 		user.GET("/success/render", userHandler.SuccessPage)
-		
+
 	}
 
 	auth := user.Group("/auth")
@@ -53,5 +53,8 @@ func NewUserRoute(c *gin.Engine, cfg config.Config) {
 
 		auth.GET("/get/all/plans", userHandler.GetAllPlans)
 		auth.POST("/generate/invoice", userHandler.GenerateInvoice)
+
+		auth.GET("/get/problem/stats", userHandler.UserGetProblemStats)
+		auth.GET("get/leaderboard/stats", userHandler.UserGetLeaderBoard)
 	}
 }

@@ -64,3 +64,11 @@ func (u *User) ConfirmPayment(ctx *gin.Context) {
 func (u *User) SuccessPage(ctx *gin.Context) {
 	handler.PaymentSuccessPage(ctx, u.Client)
 }
+
+func (u *User) UserGetProblemStats(ctx *gin.Context){
+	handler.UserGetProblemStatsHandler(ctx, u.Client)
+}
+
+func (u *User) UserGetLeaderBoard(ctx *gin.Context){
+	handler.UserGetLeaderboardHandler(ctx, u.Client)
+}

@@ -26,6 +26,33 @@ service UserService{
     rpc GenerateInvoice(InvoiceRequest) returns (Response);
     rpc MakePayment(PaymentRequest) returns(PaymentResponse);
     rpc PaymentSuccess(ConfirmRequest) returns(ConfirmResponse);
+
+    rpc UserGetProblemStats (UProblemStatsRequest) returns (UProblemStatsResponse);
+    rpc UserGetLeaderboardStats(ULeaderboardRequest) returns (ULeaderboardResponse);
+}
+
+message ULeaderboardRequest {}
+
+message ULeaderboardEntry {
+    string user_id = 1;
+    int32 solved_count = 2;
+    int32 rank = 3;
+}
+
+message ULeaderboardResponse {
+    repeated ULeaderboardEntry leaderboard = 1;
+}
+
+message UProblemStatsRequest {}
+
+message UProblemStatsResponse {
+    int32 total_problems = 1;
+    int32 easy_problems = 2;
+    int32 medium_problems = 3;
+    int32 hard_problems = 4;
+    map<string, int32> type_problem_count = 5;
+    int32 premium_problems = 6;
+    int32 non_premium_problems = 7;
 }
 
 message ConfirmResponse{
