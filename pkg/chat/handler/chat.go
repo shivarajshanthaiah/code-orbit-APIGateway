@@ -23,8 +23,47 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+type ChatHistoryResponse struct {
+	Type       string      `json:"type"`
+	UserID     string      `json:"userID"`
+	ReceiverID string      `json:"receiverID"`
+	Chats      interface{} `json:"chats"`
+}
+
+type ErrorResponse struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+	Error   string `json:"error"`
+}
+
 func HandleWebSocketConnection(c *gin.Context, client pb.ChatServiceClient, userClient userpb.UserServiceClient) {
 	ctx := c.Request.Context()
+
+	userID := c.Query("id")
+	receiverID := c.Query("receiverId")
+
+	if userID == "" || receiverID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Both id and receiverId are required",
+		})
+		return
+	}
+
+	_, err := userClient.ViewProfile(ctx, &userpb.ID{ID: userID})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Invalid UserID: %v", err),
+		})
+		return
+	}
+
+	_, err = userClient.ViewProfile(ctx, &userpb.ID{ID: receiverID})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Invalid ReceiverID: %v", err),
+		})
+		return
+	}
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
@@ -32,6 +71,54 @@ func HandleWebSocketConnection(c *gin.Context, client pb.ChatServiceClient, user
 		return
 	}
 	defer conn.Close()
+
+	historyCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+
+	response, err := client.FetchHistory(historyCtx, &pb.ChatID{
+		User_ID:     userID,
+		Receiver_ID: receiverID,
+	})
+
+	if err != nil {
+		errorResp := ErrorResponse{
+			Type:    "error",
+			Message: "Failed to fetch chat history",
+			Error:   err.Error(),
+		}
+		errorJSON, _ := json.Marshal(errorResp)
+		conn.WriteMessage(websocket.TextMessage, errorJSON)
+	} else {
+		historyResp := ChatHistoryResponse{
+			Type:       "history",
+			UserID:     userID,
+			ReceiverID: receiverID,
+			Chats:      response.Chats,
+		}
+		historyJSON, _ := json.Marshal(historyResp)
+		conn.WriteMessage(websocket.TextMessage, historyJSON)
+	}
+
+	stream, err := client.Connect(ctx)
+	if err != nil {
+		log.Println("Error connecting to chat service:", err)
+		errorResp := ErrorResponse{
+			Type:    "error",
+			Message: "Failed to connect to chat service",
+			Error:   err.Error(),
+		}
+		errorJSON, _ := json.Marshal(errorResp)
+		conn.WriteMessage(websocket.TextMessage, errorJSON)
+		return
+	}
+
+	ch := &clientHandle{
+		stream:     stream,
+		userID:     userID,
+		receiverID: receiverID,
+	}
+
+	go ch.receiveMessage(conn, userID, receiverID)
 
 	for {
 		select {
@@ -41,8 +128,12 @@ func HandleWebSocketConnection(c *gin.Context, client pb.ChatServiceClient, user
 		default:
 			_, msg, err := conn.ReadMessage()
 			if err != nil {
+				if websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
+					log.Println("WebSocket closed normally")
+					return
+				}
 				log.Println("Error reading message:", err)
-				break
+				return
 			}
 
 			var message model.Message
@@ -51,38 +142,17 @@ func HandleWebSocketConnection(c *gin.Context, client pb.ChatServiceClient, user
 				continue
 			}
 
-			// Check if user and receiver exist
-			if _, err := userClient.ViewProfile(ctx, &userpb.ID{ID: message.SenderID}); err != nil {
-				log.Println("Invalid UserID:", err)
-				continue
-			}
-			if _, err := userClient.ViewProfile(ctx, &userpb.ID{ID: message.RecipientID}); err != nil {
-				log.Println("Invalid ReceiverID:", err)
+			if message.SenderID != userID || message.RecipientID != receiverID {
+				log.Println("Invalid sender or recipient ID")
 				continue
 			}
 
-			// Send the message to the gRPC chat service
-			stream, err := client.Connect(ctx)
-			if err != nil {
-				log.Println("Error connecting to chat service:", err)
-				continue
-			}
+			ch.sentMessage(message.Content)
 
-			ch := &clientHandle{
-				stream:     stream,
-				userID:     message.SenderID,
-				receiverID: message.RecipientID,
-			}
-
-			// Write received message back to WebSocket client
 			if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				log.Println("Error writing message:", err)
-				break
+				return
 			}
-
-			// Start goroutines to send and receive messages
-			go ch.sentMessage(message.Content)
-			go ch.receiveMessage(conn, message.SenderID, message.RecipientID)
 		}
 	}
 }

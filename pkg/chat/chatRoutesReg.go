@@ -9,10 +9,6 @@ func (c *Chat) Chat(ctx *gin.Context) {
 	handler.HandleWebSocketConnection(ctx, c.client, c.userClient)
 }
 
-func (c *Chat) ChatScreen(ctx *gin.Context) {
-	handler.ChatScreen(ctx, c.client)
-}
-
 func (c *Chat) AddComment(ctx *gin.Context) {
 	handler.AddComment(ctx, c.client)
 }
@@ -25,6 +21,6 @@ func (c *Chat) GetComments(ctx *gin.Context) {
 	handler.GetCommentsForProblem(ctx, c.client)
 }
 
-func (c *Chat) GetUserComments(ctx *gin.Context){
+func (c *Chat) GetUserComments(ctx *gin.Context) {
 	handler.GetUserComments(ctx, c.client)
 }

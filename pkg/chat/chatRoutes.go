@@ -40,7 +40,6 @@ func NewChatRoutes(c *gin.Engine, cfg config.Config) {
 	{
 		user.GET("/chat", chatHandler.Chat)
 	}
-	c.GET("/chat", chatHandler.ChatScreen)
 
 	auth := user.Group("/auth")
 	auth.Use(middleware.Authorization(cfg.SECRETKEY))
