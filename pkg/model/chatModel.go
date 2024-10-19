@@ -3,8 +3,8 @@ package model
 import "time"
 
 type Message struct {
-	SenderID    string `json:"senderId"`
-	RecipientID string `json:"recipientId"`
+	SenderID    string `json:"senderid"`
+	RecipientID string `json:"recipientid"`
 	Content     string `json:"content"`
 	Timestamp   time.Time  `json:"timestamp"`
 }

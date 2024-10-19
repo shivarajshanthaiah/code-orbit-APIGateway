@@ -41,6 +41,7 @@ message ReplyRequest {
     string comment_id = 1;
     string user_id = 2;
     string content = 3;
+    string timestamp = 4;
 }
 
 message CommentResponse {
@@ -54,7 +55,8 @@ message Comment {
     string user_id = 3;
     string content = 4;
     string parent_comment_id = 5;
-    repeated Comment replies = 6;
+    string timestamp = 6;
+    repeated Comment replies = 7;
 }
 
 message Message {
