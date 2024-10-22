@@ -33,7 +33,7 @@ type UserServiceClient interface {
 	UserGetProblemWithTestCases(ctx context.Context, in *UserProblemId, opts ...grpc.CallOption) (*UserTestcaseResponse, error)
 	SubmitCode(ctx context.Context, in *UserSubmissionRequest, opts ...grpc.CallOption) (*UserSubmissionResponse, error)
 	GetUserStats(ctx context.Context, in *ID, opts ...grpc.CallOption) (*UserStatsResponse, error)
-	UserGetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error)
+	GetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error)
 	GenerateInvoice(ctx context.Context, in *InvoiceRequest, opts ...grpc.CallOption) (*Response, error)
 	MakePayment(ctx context.Context, in *PaymentRequest, opts ...grpc.CallOption) (*PaymentResponse, error)
 	PaymentSuccess(ctx context.Context, in *ConfirmRequest, opts ...grpc.CallOption) (*ConfirmResponse, error)
@@ -148,9 +148,9 @@ func (c *userServiceClient) GetUserStats(ctx context.Context, in *ID, opts ...gr
 	return out, nil
 }
 
-func (c *userServiceClient) UserGetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error) {
+func (c *userServiceClient) GetAllPlans(ctx context.Context, in *UserNoParam, opts ...grpc.CallOption) (*UPlanList, error) {
 	out := new(UPlanList)
-	err := c.cc.Invoke(ctx, "/pb.UserService/UserGetAllPlans", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.UserService/GetAllPlans", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +217,7 @@ type UserServiceServer interface {
 	UserGetProblemWithTestCases(context.Context, *UserProblemId) (*UserTestcaseResponse, error)
 	SubmitCode(context.Context, *UserSubmissionRequest) (*UserSubmissionResponse, error)
 	GetUserStats(context.Context, *ID) (*UserStatsResponse, error)
-	UserGetAllPlans(context.Context, *UserNoParam) (*UPlanList, error)
+	GetAllPlans(context.Context, *UserNoParam) (*UPlanList, error)
 	GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error)
 	MakePayment(context.Context, *PaymentRequest) (*PaymentResponse, error)
 	PaymentSuccess(context.Context, *ConfirmRequest) (*ConfirmResponse, error)
@@ -263,8 +263,8 @@ func (UnimplementedUserServiceServer) SubmitCode(context.Context, *UserSubmissio
 func (UnimplementedUserServiceServer) GetUserStats(context.Context, *ID) (*UserStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStats not implemented")
 }
-func (UnimplementedUserServiceServer) UserGetAllPlans(context.Context, *UserNoParam) (*UPlanList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserGetAllPlans not implemented")
+func (UnimplementedUserServiceServer) GetAllPlans(context.Context, *UserNoParam) (*UPlanList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPlans not implemented")
 }
 func (UnimplementedUserServiceServer) GenerateInvoice(context.Context, *InvoiceRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateInvoice not implemented")
@@ -492,20 +492,20 @@ func _UserService_GetUserStats_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_UserGetAllPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_GetAllPlans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserNoParam)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).UserGetAllPlans(ctx, in)
+		return srv.(UserServiceServer).GetAllPlans(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.UserService/UserGetAllPlans",
+		FullMethod: "/pb.UserService/GetAllPlans",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UserGetAllPlans(ctx, req.(*UserNoParam))
+		return srv.(UserServiceServer).GetAllPlans(ctx, req.(*UserNoParam))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -652,8 +652,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_GetUserStats_Handler,
 		},
 		{
-			MethodName: "UserGetAllPlans",
-			Handler:    _UserService_UserGetAllPlans_Handler,
+			MethodName: "GetAllPlans",
+			Handler:    _UserService_GetAllPlans_Handler,
 		},
 		{
 			MethodName: "GenerateInvoice",

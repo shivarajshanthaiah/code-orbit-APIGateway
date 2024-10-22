@@ -23,8 +23,8 @@ service AdminService {
     rpc UpdateTestCases(AdUpdateTestCaseRequest) returns (AdminResponse);
     rpc GetProblemWithTestCases(AdProblemId) returns (AdminTestcaseResponse);
 
-    rpc AddSubscriptionPlan(AdSubscription) returns(AdminResponse);
-    rpc GetAllPlans(AdNoParam) returns(AdPlanList);
+    rpc AdminAddSubscriptionPlan(AdSubscription) returns(AdminResponse);
+    rpc AdminGetAllPlans(AdNoParam) returns(AdPlanList);
     rpc AdminUpdatePlan(AdSubscription) returns(AdSubscription);
 
     rpc AdminGetUserStats (AdUserStatsRequest) returns (AdUserStatsResponse);

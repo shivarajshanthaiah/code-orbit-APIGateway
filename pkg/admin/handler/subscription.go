@@ -26,7 +26,7 @@ func AddSubscriptionHandler(c *gin.Context, client pb.AdminServiceClient) {
 		return
 	}
 
-	response, err := client.AddSubscriptionPlan(ctx, &pb.AdSubscription{
+	response, err := client.AdminAddSubscriptionPlan(ctx, &pb.AdSubscription{
 		Plan:       plan.Plan,
 		Duration:   plan.Duration,
 		Price:      plan.Price,
@@ -107,7 +107,7 @@ func AdminGetAllPlansHandler(c *gin.Context, client pb.AdminServiceClient) {
 	ctx, cancel := context.WithTimeout(c, timeout)
 	defer cancel()
 
-	response, err := client.GetAllPlans(ctx, &pb.AdNoParam{})
+	response, err := client.AdminGetAllPlans(ctx, &pb.AdNoParam{})
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"Status":  http.StatusInternalServerError,

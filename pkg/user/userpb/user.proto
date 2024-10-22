@@ -21,8 +21,8 @@ service UserService{
 
     rpc SubmitCode (UserSubmissionRequest) returns (UserSubmissionResponse);
     rpc GetUserStats(ID) returns(UserStatsResponse);
-
-    rpc UserGetAllPlans(UserNoParam) returns(UPlanList);
+    
+    rpc GetAllPlans(UserNoParam) returns(UPlanList);
     rpc GenerateInvoice(InvoiceRequest) returns (Response);
     rpc MakePayment(PaymentRequest) returns(PaymentResponse);
     rpc PaymentSuccess(ConfirmRequest) returns(ConfirmResponse);
@@ -99,7 +99,7 @@ message USubscription {
     string duration =3;     
     double price = 4;      
     double gst = 5;        
-    double total_price = 6;
+    uint32 total_price = 6;
 }
 
 message UserStatsResponse {

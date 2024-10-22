@@ -14,7 +14,7 @@ func UserGetAllPlans(c *gin.Context, client pb.UserServiceClient) {
 	ctx, cancel := context.WithTimeout(c, timeout)
 	defer cancel()
 
-	response, err := client.UserGetAllPlans(ctx, &pb.UserNoParam{})
+	response, err := client.GetAllPlans(ctx, &pb.UserNoParam{})
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"Status":  http.StatusInternalServerError,
