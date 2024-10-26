@@ -10,7 +10,8 @@ import (
 )
 
 func ClientDial(cfg config.Config) (pb.ChatServiceClient, error) {
-	grpc, err := grpc.Dial(":"+cfg.CHATPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	address := "chat-service:" + cfg.CHATPORT
+	grpc, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("Error dialing to grpc to client : %s", err.Error())
 		return nil, err

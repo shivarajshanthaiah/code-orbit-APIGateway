@@ -10,7 +10,8 @@ import (
 )
 
 func ClientDial(cfg config.Config) (pb.AdminServiceClient, error) {
-	grpc, err := grpc.Dial(":"+cfg.ADMINPORT, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	address := "admin-service:" + cfg.ADMINPORT
+	grpc, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("Error dialing to grpc to client : %s", err.Error())
 		return nil, err

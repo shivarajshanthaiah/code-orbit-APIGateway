@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/shivaraj-shanthaiah/code_orbit_apigateway/pkg/config"
@@ -12,14 +11,14 @@ import (
 
 func ClientDial(cfg config.Config) (pb.UserServiceClient, error) {
 	// Combine host and port to create the full address
-	grpcAddr := fmt.Sprintf("localhost:%s", cfg.USERPORT)
+	address := "user-service:" + cfg.USERPORT
 
-	grpcConn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcConn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("Error dialing to grpc client: %s", err.Error())
 		return nil, err
 	}
 
-	log.Printf("Successfully connected to user client at address : %s", grpcAddr)
+	log.Printf("Successfully connected to user client at address : %s", address)
 	return pb.NewUserServiceClient(grpcConn), nil
 }
